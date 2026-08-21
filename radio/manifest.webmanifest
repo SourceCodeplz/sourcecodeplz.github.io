@@ -1,0 +1,10 @@
+{
+  "name": "SourceCodeplz Radio",
+  "short_name": "Radio",
+  "start_url": "/radio/",
+  "scope": "/radio/",
+  "display": "standalone",
+  "background_color": "#080a0e",
+  "theme_color": "#080a0e",
+  "description": "Discover and listen to internet radio stations from around the world."
+}
