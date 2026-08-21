@@ -1,0 +1,11 @@
+{
+  "name": "Text Forge — AI Copy/Paste Formatter",
+  "short_name": "Text Forge",
+  "description": "Private offline-first text cleanup for AI and web copy/paste workflows.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#070b14",
+  "theme_color": "#0b1020",
+  "icons": []
+}
