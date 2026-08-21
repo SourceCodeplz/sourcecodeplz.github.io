@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="OpenAI-compatible token counter using BPE tokenization in your browser.">
+  <title>Token Counter — SourceCodeplz Tools</title>
+  <style>
+    :root { color-scheme: dark; --bg:#0b0d10; --panel:#12161c; --panel-2:#171c23; --text:#f1f5f9; --muted:#94a3b8; --line:#293241; --accent:#8b5cf6; --accent-2:#a78bfa; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:radial-gradient(circle at 20% 0%, #1b1530 0, transparent 35%),var(--bg); color:var(--text); }
+    main { width:min(1100px,calc(100% - 32px)); margin:0 auto; padding:56px 0 72px; }
+    header { margin-bottom:28px; }
+    .eyebrow { color:var(--accent-2); font-weight:700; letter-spacing:.08em; text-transform:uppercase; font-size:12px; }
+    h1 { margin:8px 0 8px; font-size:clamp(32px,6vw,52px); line-height:1; letter-spacing:-.04em; }
+    .sub { margin:0; color:var(--muted); max-width:760px; line-height:1.6; }
+    .toolbar { display:flex; gap:12px; flex-wrap:wrap; align-items:end; margin:24px 0 16px; }
+    label { display:grid; gap:7px; color:var(--muted); font-size:13px; font-weight:600; }
+    select,button { font:inherit; }
+    select { min-width:220px; padding:11px 14px; border:1px solid var(--line); border-radius:10px; background:var(--panel); color:var(--text); }
+    button { padding:11px 15px; border:1px solid var(--line); border-radius:10px; background:var(--panel-2); color:var(--text); cursor:pointer; font-weight:700; }
+    button:hover { border-color:#445064; }
+    .grid { display:grid; grid-template-columns:1.3fr .7fr; gap:16px; }
+    .card { border:1px solid var(--line); border-radius:16px; background:rgba(18,22,28,.92); box-shadow:0 16px 50px rgba(0,0,0,.18); }
+    .editor { overflow:hidden; }
+    textarea { width:100%; min-height:440px; display:block; resize:vertical; border:0; outline:0; padding:22px; background:transparent; color:var(--text); font:16px/1.65 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace; }
+    .editor-footer { display:flex; justify-content:space-between; gap:12px; align-items:center; border-top:1px solid var(--line); padding:12px 16px; color:var(--muted); font-size:12px; }
+    .stats { display:grid; grid-template-columns:1fr 1fr; gap:12px; padding:16px; }
+    .stat { padding:18px; border:1px solid var(--line); border-radius:14px; background:rgba(23,28,35,.72); }
+    .stat span { display:block; color:var(--muted); font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px; }
+    .stat strong { font-size:28px; letter-spacing:-.03em; }
+    .wide { grid-column:1/-1; }
+    .status { color:var(--muted); font-size:12px; }
+    .error { color:#fca5a5; }
+    .note { margin-top:16px; padding:16px 18px; border:1px solid var(--line); border-radius:12px; color:var(--muted); font-size:13px; line-height:1.55; }
+    a { color:var(--accent-2); }
+    @media (max-width:780px) { main{padding-top:34px}.grid{grid-template-columns:1fr} textarea{min-height:320px}.wide{grid-column:auto} }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div class="eyebrow">SourceCodeplz Tools</div>
+      <h1>Token Counter</h1>
+      <p class="sub">Count tokens locally in your browser using the OpenAI-style BPE tokenizer. Pick the encoding used by your target model and get an exact token count for that encoding.</p>
+    </header>
+
+    <div class="toolbar">
+      <label>Encoding
+        <select id="encoding">
+          <option value="o200k_base">o200k_base — GPT-5.x, GPT-4.1, GPT-4o, o-series</option>
+          <option value="cl100k_base">cl100k_base — GPT-4 / GPT-3.5 / embeddings</option>
+          <option value="p50k_base">p50k_base — older code/text models</option>
+          <option value="r50k_base">r50k_base — GPT-3 / older models</option>
+        </select>
+      </label>
+      <button id="example" type="button">Load example</button>
+      <button id="clear" type="button">Clear</button>
+    </div>
+
+    <section class="grid" aria-label="Token counter">
+      <div class="card editor">
+        <textarea id="text" spellcheck="false" placeholder="Paste or type text here…">Hello! Tokenization depends on the model and encoding, so counting characters is only an estimate.</textarea>
+        <div class="editor-footer">
+          <span id="status" class="status">Loading tokenizer…</span>
+          <span id="chars">0 characters</span>
+        </div>
+      </div>
+      <div class="card stats">
+        <div class="stat"><span>Tokens</span><strong id="tokens">—</strong></div>
+        <div class="stat"><span>Words</span><strong id="words">0</strong></div>
+        <div class="stat"><span>Characters</span><strong id="charStat">0</strong></div>
+        <div class="stat"><span>Bytes</span><strong id="bytes">0</strong></div>
+        <div class="stat wide"><span>Characters per token</span><strong id="ratio">—</strong></div>
+      </div>
+    </section>
+
+    <div class="note">
+      OpenAI notes that tokenization varies by model and encoding; the familiar “~4 characters per token” rule is only a rough English-language estimate. This page uses the same family of BPE encodings exposed by <a href="https://github.com/openai/tiktoken" target="_blank" rel="noreferrer">tiktoken</a>, rather than a character-count formula. The tokenizer code runs locally in your browser; your text is not sent to an API by this page.
+    </div>
+  </main>
+
+  <script type="module">
+    import { Tiktoken } from "https://esm.sh/js-tiktoken@1.0.21/lite";
+
+    const textEl = document.getElementById('text');
+    const encodingEl = document.getElementById('encoding');
+    const statusEl = document.getElementById('status');
+    const tokensEl = document.getElementById('tokens');
+    const wordsEl = document.getElementById('words');
+    const charsEl = document.getElementById('chars');
+    const charStatEl = document.getElementById('charStat');
+    const bytesEl = document.getElementById('bytes');
+    const ratioEl = document.getElementById('ratio');
+
+    const encoders = new Map();
+    const rankUrls = {
+      o200k_base: 'https://tiktoken.pages.dev/js/o200k_base.json',
+      cl100k_base: 'https://tiktoken.pages.dev/js/cl100k_base.json',
+      p50k_base: 'https://tiktoken.pages.dev/js/p50k_base.json',
+      r50k_base: 'https://tiktoken.pages.dev/js/r50k_base.json'
+    };
+
+    async function getEncoder(name) {
+      if (encoders.has(name)) return encoders.get(name);
+      statusEl.textContent = `Loading ${name}…`;
+      const response = await fetch(rankUrls[name], { cache: 'force-cache' });
+      if (!response.ok) throw new Error(`Could not load ${name} tokenizer data.`);
+      const data = await response.json();
+      const encoder = new Tiktoken(data);
+      encoders.set(name, encoder);
+      return encoder;
+    }
+
+    function updateBasicStats(text) {
+      const chars = text.length;
+      const words = text.trim() ? text.trim().split(/\s+/u).length : 0;
+      const bytes = new TextEncoder().encode(text).length;
+      charsEl.textContent = `${chars.toLocaleString()} character${chars === 1 ? '' : 's'}`;
+      wordsEl.textContent = words.toLocaleString();
+      charStatEl.textContent = chars.toLocaleString();
+      bytesEl.textContent = bytes.toLocaleString();
+    }
+
+    async function update() {
+      const text = textEl.value;
+      updateBasicStats(text);
+      try {
+        const encoder = await getEncoder(encodingEl.value);
+        const count = encoder.encode(text).length;
+        tokensEl.textContent = count.toLocaleString();
+        ratioEl.textContent = count ? (text.length / count).toFixed(2) : '—';
+        statusEl.textContent = `Using ${encodingEl.value}`;
+        statusEl.classList.remove('error');
+      } catch (error) {
+        tokensEl.textContent = '—';
+        ratioEl.textContent = '—';
+        statusEl.textContent = error.message;
+        statusEl.classList.add('error');
+      }
+    }
+
+    let timer;
+    textEl.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(update, 80);
+    });
+    encodingEl.addEventListener('change', update);
+    document.getElementById('clear').addEventListener('click', () => { textEl.value = ''; update(); textEl.focus(); });
+    document.getElementById('example').addEventListener('click', () => {
+      textEl.value = 'You miss 100% of the shots you don’t take. — Wayne Gretzky';
+      update();
+      textEl.focus();
+    });
+
+    update();
+  </script>
+</body>
+</html>
