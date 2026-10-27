@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Barn and Its Horse</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: linear-gradient(135deg, #8B5E3C 0%, #5C4033 100%);
+    color: #2D2D2D;
+    font-family: Arial, Helvetica, sans-serif;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  header {
+    text-align: center;
+    padding: 30px 20px;
+    background: #F4A261;          /* amber */
+    color: #fff;
+    font-size: 2.5rem;
+    animation: pulseText 3s infinite ease-in-out;
+  }
+  @keyframes pulseText {
+    0%,100% { text-shadow: 0 0 8px #ffcc80; }
+    50%     { text-shadow: 0 0 25px #f4a261, 0 0 50px #ffcc00; }
+  }
+
+  .story {
+    max-width: 800px;
+    width: 90%;
+    text-align: center;
+    margin-top: 20px;
+    animation: slideUp 1s ease-out forwards;
+  }
+  @keyframes slideUp {
+    from { opacity:0; transform: translateY(30px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+
+  .barn {
+    position: relative;
+    width: 420px;
+    height: 340px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    animation: floatBarn 5s ease-in-out infinite;
+  }
+  @keyframes floatBarn {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-12px); }
+  }
+
+  .barn img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .horse {
+    position: absolute;
+    bottom: 130px;
+    left: 50%;
+    transform: translateX(-50%) rotate(0deg);
+    text-align: center;
+    animation: horseFloat 7s ease-in-out infinite;
+  }
+  @keyframes horseFloat {
+    0%,100% { transform: translateX(-50%) rotate(0deg); }
+    50%     { transform: translateX(-50%) rotate(5deg) scaleY(1.05); }
+  }
+</style>
+</head>
+<body>
+
+<header>Into the Heart of the Barn</header>
+
+<div class="story">
+  <p><strong>The Whispering Hay:</strong> Deep within a quiet valley, an old barn stands as much like a sleepy dragon’s lair. Its weathered wooden walls have seen countless seasons.</p>
+  <p><strong>The Morning Ritual:</strong> At sunrise, golden light streams through cracked windows, and Starlight the horse stretches her delicate ears, feeling the cool straw beneath her hooves.</p>
+  <p><strong>A Tale of Freedom:</strong> When storm clouds threatened to flood the lower lofts, Starlight trotted to the water barrel, nudging the heavy lid until the rain passed safely.</p>
+  <p><strong>The Heart of the Barn:</strong> As twilight paints the sky in amber, fireflies dance on the rafters. Starlight rests beside a pile of soft hay, eyes half‑closed in contentment.</p>
+</div>
+
+<div class="barn">
+  <!-- Replace with your own barn interior image if you like -->
+  <img src="https://via.placeholder.com/420x340?text=Old+Barn+Interior" alt="Barn interior">
+  <span class="horse">🐎 Starlight</span>
+</div>
+
+</body>
+</html>
