@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>The Horse in the Barn</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:#1a1520;
+    color:#c49a3c;
+    font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    overflow:hidden;
+  }
+  .story{
+    max-width:720px;
+    text-align:center;
+    padding:2rem 1rem;
+    background:#4a3728;
+    border-radius:18px;
+    box-shadow:0 12px 40px rgba(0,0,0,.6);
+  }
+  h1{font-size:2.8rem;margin-bottom:.5rem;color:#e07b00;}
+  p{color:#c49a3c;font-size:1.2rem;line-height:1.8;margin-top:.5rem}
+</style>
+</head>
+<body>
+<div class="story">
+  <h1>Luna's Morning in the Barn</h1>
+  <p>
+    At first light, the old wooden walls of the barn exhale a cool, golden breath.
+    Luna, a young foal with amber eyes and a streak of midnight blue on her flank, steps out onto the straw-slick floor. Her hooves barely stir the dust as she sniffs the air, ears twitching at the faint clang of an unseen bell in the distance.
+    She pads toward the hayloft, where the scent of fresh turnips and wild thyme greets her nose. The barn hums with soft thumps on the boards and the occasional creak of a weathered beam. Luna settles beneath the low shelf, curls her head, and watches golden rays dance across swirling dust motes in the light.
+  </p>
+</div>
+
+<canvas id="c"></canvas>
+
+<script>
+  const c = document.getElementById('c');
+  function resize(){ c.width=window.innerWidth; c.height=window.innerHeight;}
+  window.addEventListener('resize',resize);
+  const ctx=c.getContext('2d');
+
+  // Background stars
+  function drawStars(){
+    ctx.fillStyle='rgba(255,255,255,0.25)';
+    for(let i=0;i<120;i++){
+      const sx=(Math.random()*c.width)*c.height;
+      const sy=Math.random()*(c.height)*2+50;
+      ctx.beginPath(); ctx.arc(sx,sy,1.5,0,Math.PI*2); ctx.fill();
+    }
+  }
+
+  // Hay dust particles
+  const particles=[];
+  for(let i=0;i<70;i++){
+    particles.push({
+      x: Math.random()*c.width,
+      y: Math.random()*c.height,
+      vx: (Math.random()-0.5)*1.4,
+      vy: (Math.random()-0.5)*1.4,
+      r: 1.2+Math.random()*3
+    });
+  }
+
+  function animate(){
+    ctx.clearRect(0,0,c.width,c.height);
+    drawStars();
+    for(const p of particles){
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x < -5) p.x = c.width + 5;
+      if(p.y < -5) p.y = c.height + 5;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,Math.max(0.2,p.r),0,Math.PI*2);
+      ctx.fillStyle='rgba(255,190,50,'+ (p.r/4)+'');
+      ctx.fill();
+    }
+    requestAnimationFrame(animate);
+  }
+  animate();
+</script>
+</body>
+</html>
+dan@DESKTOP-UQ0350F:~/models-benchmarks/lfm3$
